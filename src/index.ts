@@ -24,6 +24,7 @@ startConnection().then(() => {
     ioInstance.emit('putzz_result', putzz)
   }, 60000)
   ioInstance.on('connection', function (socket: any) {
+    console.log('connect')
     socket.on('putzz', async function (_msg: any) {
       // const { putzz }: any = await Settings.findOne('e0b54b54-a0ba-447e-a387-3674a2f1c3c4')
       // await waitFor(1000)
@@ -32,6 +33,7 @@ startConnection().then(() => {
       //   ioInstance.emit('putzz_result', _msg + 1)
       // })
       // const { putzz }: any = await Settings.findOne('e0b54b54-a0ba-447e-a387-3674a2f1c3c4')
+      console.log(_msg)
       if (_msg >= 100) return
       putzz = _msg + 0.33
       ioInstance.emit('putzz_result', putzz)
