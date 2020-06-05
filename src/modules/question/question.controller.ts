@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { QuestionTest } from '../../database/entity/question_test.entity'
+import { Question } from '../../database/entity/question.entity'
 import { User } from '../../database/entity/user.entity'
 import ErrorResponse from '../../helpers/error-return'
 import Paginate from '../../helpers/paginate'
@@ -9,9 +9,9 @@ class QuestionController {
   async list(_req: Request, _res: Response) {
     try {
       const getPaginate = Paginate(_req)
-      const getEntity = await QuestionTest.findAndCount({
+      const getEntity = await Question.findAndCount({
         ...getPaginate,
-        // where: { user: _req.user },
+        where: { user: _req.user },
         order: { created_at: 'DESC' },
       })
 
@@ -28,10 +28,10 @@ class QuestionController {
       const where: any = {}
       if (_req.query.selected) where.selected = _req.query.selected
 
-      const getEntity = await QuestionTest.findAndCount({
+      const getEntity = await Question.findAndCount({
         ...getPaginate,
         where,
-        // relations: ['user'],
+        relations: ['user'],
         order: { created_at: 'DESC' },
       })
 
@@ -56,10 +56,10 @@ class QuestionController {
 
   async create(_req: Request, _res: Response) {
     try {
-      const body: QuestionTest = _req.body
-      const result = await QuestionTest.create({
+      const body: Question = _req.body
+      const result = await Question.create({
         ...body,
-        // user: _req.user,
+        user: _req.user,
       }).save()
 
       return _res.json({ result })
@@ -72,12 +72,31 @@ class QuestionController {
   async select(_req: Request, _res: Response) {
     try {
       const { id } = _req.params
-      const question = await QuestionTest.findOne(id)
+      const question = await Question.findOne(id)
       if (!question) throw Error('Not found!')
 
-      await QuestionTest.update(id, { selected: !question.selected })
+      await Question.update(id, { selected: !question.selected })
 
       return _res.jsonp({ id, selected: !question.selected })
+    } catch (err) {
+      return ErrorResponse(_res, err)
+    }
+  }
+
+  async rate(_req: Request, _res: Response) {
+    try {
+      const { rate }: any = _req.params
+      const user = await User.update(_req.user.id, { rate })
+
+      return _res.jsonp({ ...user })
+    } catch (err) {
+      return ErrorResponse(_res, err)
+    }
+  }
+
+  async getRate(_req: Request, _res: Response) {
+    try {
+      return _res.jsonp({ rate: _req.user.rate })
     } catch (err) {
       return ErrorResponse(_res, err)
     }

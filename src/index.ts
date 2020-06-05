@@ -14,7 +14,7 @@ const ioInstance = io.listen(serverStart)
 config()
 startConnection().then(() => {
   // eslint-disable-next-line no-console
-  const PORT = process.env.API_PORT || 7000
+  const PORT = 3079
   const SETTINGS = 'e0b54b54-a0ba-447e-a387-3674a2f1c3c4'
 
   let putzz = 0

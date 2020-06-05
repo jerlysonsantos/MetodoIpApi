@@ -4,7 +4,7 @@ import userController from './user.controller'
 const router = Router()
 
 router.get('/me', userController.me)
-router.post('/register/:lead_id', userController.create)
+router.post('/register', userController.create)
 router.post('/lead', userController.lead)
 
 router.get('/lead/:id', userController.getLead)
