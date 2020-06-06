@@ -25,7 +25,7 @@ class QuestionController {
     try {
       const getPaginate = Paginate(_req)
 
-      const where: any = {}
+      const where: any = { is_active: true }
       if (_req.query.selected) where.selected = _req.query.selected
 
       const getEntity = await Question.findAndCount({

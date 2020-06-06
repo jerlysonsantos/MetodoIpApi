@@ -17,6 +17,9 @@ export class Question extends BaseEntity {
   @Column({ default: false })
   selected: boolean
 
+  @Column({ default: false })
+  is_active: boolean
+
   @CreateDateColumn()
   created_at: Date
 
