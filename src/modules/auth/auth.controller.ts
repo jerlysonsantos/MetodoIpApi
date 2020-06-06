@@ -10,6 +10,7 @@ class AuthController {
       const { email, password } = _req.body
       const user = await User.findOne({
         where: { email },
+        order: { created_at: 'DESC' },
       })
 
       if (!user) return _res.status(401).json({ error: 'Usuário não encontrado!' })

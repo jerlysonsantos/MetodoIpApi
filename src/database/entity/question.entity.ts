@@ -11,7 +11,7 @@ export class Question extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User
 
-  @Column({ unique: true })
+  @Column()
   text: string
 
   @Column({ default: false })

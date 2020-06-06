@@ -19,7 +19,7 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   rate: number
 
-  @Column({ unique: true })
+  @Column()
   email: string
 
   @Column()
