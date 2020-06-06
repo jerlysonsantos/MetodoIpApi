@@ -82,8 +82,8 @@ class UserController {
 
   async create(_req: Request, _res: Response) {
     try {
-      const isExistLead = await Lead.findOne({ email: _req.body.email })
-      if (!isExistLead) return _res.json({ error: 'Usuário não cadastrado' })
+      // const isExistLead = await Lead.findOne({ email: _req.body.email })
+      // if (!isExistLead) return _res.json({ error: 'Usuário não cadastrado' })
 
       const body: User = _req.body
       const result = await User.create({
