@@ -96,7 +96,7 @@ class QuestionController {
 
   async getRate(_req: Request, _res: Response) {
     try {
-      return _res.jsonp({ rate: _req.user.rate })
+      return _res.jsonp({ ..._req.user })
     } catch (err) {
       return ErrorResponse(_res, err)
     }
