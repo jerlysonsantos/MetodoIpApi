@@ -1,9 +1,9 @@
-import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, Unique, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 import { v4 } from 'uuid'
 import { User } from './user.entity'
 
 @Entity({ name: 'question' })
-@Unique('unique_question_text', ['user', 'text'])
+// @Unique('unique_question_text', ['user', 'text'])
 export class Question extends BaseEntity {
   @PrimaryColumn('uuid')
   id: String
