@@ -57,6 +57,10 @@ class QuestionController {
   async create(_req: Request, _res: Response) {
     try {
       const body: Question = _req.body
+
+      const question = await Question.findOne({ text: _req.body.tex })
+      if (question) throw Error('Já existe essa pergunta!')
+
       const result = await Question.create({
         ...body,
         user: _req.user,
