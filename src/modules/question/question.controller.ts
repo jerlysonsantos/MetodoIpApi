@@ -83,6 +83,21 @@ class QuestionController {
     }
   }
 
+  async update(_req: Request, _res: Response) {
+    try {
+      const { id } = _req.params
+      const body = _req.body
+      const question = await Question.findOne(id)
+      if (!question) throw Error('Not found!')
+
+      const result = await Question.update(id, { ...body })
+
+      return _res.jsonp(result)
+    } catch (err) {
+      return ErrorResponse(_res, err)
+    }
+  }
+
   async rate(_req: Request, _res: Response) {
     try {
       const { rate }: any = _req.params

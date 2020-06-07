@@ -14,6 +14,9 @@ export class Question extends BaseEntity {
   @Column()
   text: string
 
+  @Column({ nullable: true })
+  resposta: string
+
   @Column({ default: false })
   selected: boolean
 
