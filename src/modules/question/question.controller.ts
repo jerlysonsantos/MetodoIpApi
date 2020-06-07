@@ -58,7 +58,7 @@ class QuestionController {
     try {
       const body: Question = _req.body
 
-      const question = await Question.findOne({ text: _req.body.tex })
+      const question = await Question.findOne({ text: _req.body.text })
       if (question) throw Error('Já existe essa pergunta!')
 
       const result = await Question.create({
