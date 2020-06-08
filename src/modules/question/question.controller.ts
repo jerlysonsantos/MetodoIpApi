@@ -61,10 +61,10 @@ class QuestionController {
       // const question = await Question.findOne({ text: _req.body.text })
       // if (question) throw Error('Já existe essa pergunta!')
 
-      const result = await Question.create({
-        ...body,
-        user: _req.user,
-      }).save()
+      // const result = await Question.create({
+      //   ...body,
+      //   user: _req.user,
+      // }).save()
 
       return _res.json({ result })
     } catch (err) {
