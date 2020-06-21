@@ -32,7 +32,7 @@ class QuestionController {
         ...getPaginate,
         where,
         relations: ["user"],
-        order: { created_at: "DESC" },
+        order: { created_at: _req.query.offset ? "ASC" : "DESC" },
       });
 
       return SuccessListResponse(_req, _res, [getEntity[0], getEntity[1]]);
