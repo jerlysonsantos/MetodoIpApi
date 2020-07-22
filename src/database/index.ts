@@ -4,7 +4,7 @@ import { createConnection } from 'typeorm'
 const startConnection = async () => {
   await createConnection({
     type: 'postgres',
-    host: '10.8.0.238',
+    host: '172.16.144.18',
     port: 5432,
     username: 'systagg_bi',
     password: '@TAGG!$$@@',
