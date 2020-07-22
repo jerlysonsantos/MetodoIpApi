@@ -4,11 +4,11 @@ import { createConnection } from 'typeorm'
 const startConnection = async () => {
   await createConnection({
     type: 'postgres',
-    host: '172.16.144.18',
+    host: process.env.DB_HOST,
     port: 5432,
-    username: 'systagg_bi',
-    password: '@TAGG!$$@@',
-    database: 'homolog_pdv_manager',
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     synchronize: true,
     logging: false,
     entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
