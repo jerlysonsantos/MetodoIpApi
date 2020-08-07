@@ -22,6 +22,9 @@ export class Question extends BaseEntity {
   selected: boolean
 
   @Column({ default: false })
+  selectedToPablo: boolean
+
+  @Column({ default: false })
   is_active: boolean
 
   @CreateDateColumn()
