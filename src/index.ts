@@ -4,6 +4,8 @@ import 'reflect-metadata'
 import startConnection from './database'
 import app from './server'
 
+import io from 'socket.io';
+
 const serverStart = server.createServer(app)
 const ioInstance = io.listen(serverStart)
 
