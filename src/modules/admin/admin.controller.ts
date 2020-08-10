@@ -69,6 +69,19 @@ class AdminController {
     }
   }
 
+  async delete(_req: Request, _res: Response) {
+    try {
+      const { id } = _req.params;
+      const admin = await Admins.findOne(id);
+      if (!admin) throw Error("Not found!");
+      await Admins.delete(id);
+
+      return _res.jsonp({ ...admin });
+    } catch (err) {
+      return ErrorResponse(_res, err);
+    }
+  }
+
   async login(_req: Request, _res: Response) {
     try {
       const { email, password } = _req.body;

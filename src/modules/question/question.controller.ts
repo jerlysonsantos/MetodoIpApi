@@ -27,12 +27,13 @@ class QuestionController {
 
       const where: any = { is_active: true };
       if (_req.query.selected) where.selected = _req.query.selected;
+      if (_req.query.toPablo) where.selectedToPablo = _req.query.toPablo;
 
       const getEntity = await Question.findAndCount({
         ...getPaginate,
         where,
         relations: ["user"],
-        order: { created_at: _req.query.offset ? "ASC" : "DESC" },
+        order: { created_at: "DESC"},
       });
 
       return SuccessListResponse(_req, _res, [getEntity[0], getEntity[1]]);

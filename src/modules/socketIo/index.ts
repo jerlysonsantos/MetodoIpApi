@@ -5,12 +5,8 @@ import generator from 'generate-password';
 class SocketIo {
 
 	private io: any = {}
-	private messages: any[] = []
-
-	private questionsRecived: any[] = []
-	private selectToPablo: any[] = []
-	private selected: any[] = []
-
+  private messages: any[] = []
+  
 	constructor (ioInstance: any) {
 		this.io = ioInstance;
 
@@ -26,39 +22,48 @@ class SocketIo {
 			socket.on('sendMessage', (data: any) => {
 
 				let message = {
-					messageId: generator.generate({ length: 10, numbers: true }),
+          messageId: generator.generate({ length: 10, numbers: true }),
+          deleted: false,
 					...data
 				};
 
-				this.messages.push(message);
+        this.messages.push(message);
+				socket.emit('myMessage', { ...message, author: 'Eu'});
 				socket.broadcast.emit('reciveMessage', message);
 			});
 
+      socket.on('deleteMessage', (data: any) => {
+        const newList = this.messages.map((item) => {
+          if (item.messageId === data)
+            item['deleted'] = true;
+          return item;
+        });
+        this.messages = newList;
+        socket.emit('deletedMessage', data);
+        socket.broadcast.emit('deletedMessage', data);
+      })
 		});
 	}
 
+  sleep(ms: number) {
+    var unixtime_ms = new Date().getTime();
+    while(new Date().getTime() < unixtime_ms + ms) {}
+  }
+
 	private question(): void {
-		this.io.of('/question').on('connect', (socket: any) => {
+		this.io.of('/question').on('connect', async (socket: any) => {
+      // O paramentro data precisa ser do tipo Question para que possa ser salvo no DB
+			socket.on('doQuestion', async (data: Question) => {
 
-			socket.emit('listQuestion', this.questionsRecived);
+        const { user, ...item } = data;
 
-			socket.on('doQuestion', async (data: any) => {
+				const result = await Question.create({
+          ...item,
+          user
+        }).save();
 
-				let question = {
-					clientId: socket.id,
-					questionId: generator.generate({ length: 10, numbers: true }),
-					...data
-				}
-
-				// data tem q contar um campo USER com todos os dados
-				await Question.create({
-	        text: data.question,
-	        resposta: data.answer,
-	        user: data.user
-	      }).save();
-
-				this.questionsRecived.push(question);
-				socket.emit('listQuestion', this.questionsRecived);
+        this.sleep(3000);        
+				socket.broadcast.emit('listQuestion', result);
 			});
 
 			socket.on('doAnswer', async (data: any) => {
@@ -73,16 +78,16 @@ class SocketIo {
 			});
 
 			socket.on('select', async (data: any) => {
-				switch (data.selectToPablo) {
+        const { selectToPablo, ...item } = data;
+
+				switch (selectToPablo) {
 					case true:
-					 	let result = await Question.update(data.id, { selectedToPablo: true });
-						this.selectToPablo.push(result);
-						socket.broadcast.emit('selectToPablo', result);
+					 	await Question.update(item.id, { selected: true, selectedToPablo: true });
+						socket.broadcast.emit('selectToPablo', item);
 						break;
-					default:
-					 	let result = await Question.update(data.id, { selected: true });
-						this.selected.push(result);
-						socket.broadcast.emit('selected', result);
+					case false:
+					 	await Question.update(data.id, { selected: true, selectedToPablo: false });
+						socket.broadcast.emit('selected', item);
 						break;
 				}
 			});

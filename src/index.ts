@@ -3,7 +3,6 @@ import server from 'http'
 import 'reflect-metadata'
 import startConnection from './database'
 import app from './server'
-import io from 'socket.io'
 
 import io from 'socket.io';
 
