@@ -4,22 +4,59 @@ import generator from 'generate-password';
 
 class SocketIo {
 
-	private io: any = {}
-  private messages: any[] = []
-  
+	private io: any = {};
+  private messages: any[] = [];
+
+  private currentConfig: any = {
+    tema: '',
+    blockQuestion: true,
+    blockChat: false,
+  };
+
+  private palestranteInfos: any = {
+    name: 'Teste',
+    instagram: '@teste',
+  };
+
 	constructor (ioInstance: any) {
 		this.io = ioInstance;
 
 		this.chat();
-		this.question();
-	}
+    this.question();
+    this.appConfig();
+  }
+  
+
+// =================== FUNÇÕES ======================//
+  private deleteMessage(data: any) {
+    return new Promise((resolve) => {
+      const newList = this.messages.map((item) => {
+        if (item.messageId === data)
+          item['deleted'] = true;
+        return item;
+      });
+      this.messages = newList;
+      resolve();
+    })
+  }
+
+  private sleep(ms: number) {
+    var unixtime_ms = new Date().getTime();
+    while(new Date().getTime() < unixtime_ms + ms) {}
+  }
+
+  // ===============================================//
+
+  // ================= ROTAS DO SOCKET.IO ============================//
 
 	private chat(): void {
-		this.io.of('/chat').on('connect', (socket: any) => {
+		this.io.of('/chat').on('connection', (socket: any) => {
 
-			socket.emit('getAllMessages', this.messages);
+      socket.on('getMessages', () => {
+  			socket.emit('getAllMessages', this.messages);
+      });
 
-			socket.on('sendMessage', (data: any) => {
+			socket.on('sendMessage', async (data: any) => {
 
 				let message = {
           messageId: generator.generate({ length: 10, numbers: true }),
@@ -27,31 +64,21 @@ class SocketIo {
 					...data
 				};
 
-        this.messages.push(message);
 				socket.emit('myMessage', { ...message, author: 'Eu'});
 				socket.broadcast.emit('reciveMessage', message);
-			});
+        await new Promise((resolve) => { this.messages.push(message); resolve() });
+      });
 
-      socket.on('deleteMessage', (data: any) => {
-        const newList = this.messages.map((item) => {
-          if (item.messageId === data)
-            item['deleted'] = true;
-          return item;
-        });
-        this.messages = newList;
+      socket.on('deleteMessage', async (data: any) => {
         socket.emit('deletedMessage', data);
         socket.broadcast.emit('deletedMessage', data);
+        await this.deleteMessage(data);
       })
 		});
 	}
 
-  sleep(ms: number) {
-    var unixtime_ms = new Date().getTime();
-    while(new Date().getTime() < unixtime_ms + ms) {}
-  }
-
 	private question(): void {
-		this.io.of('/question').on('connect', async (socket: any) => {
+		this.io.of('/question').on('connection', async (socket: any) => {
       // O paramentro data precisa ser do tipo Question para que possa ser salvo no DB
 			socket.on('doQuestion', async (data: Question) => {
 
@@ -92,7 +119,31 @@ class SocketIo {
 				}
 			});
 		});
-	}
+  }
+  
+  private appConfig(): void {
+    this.io.of('/config').on('connection', (socket: any) => {
+      socket.on('getConfig', () => {
+        socket.emit('sendConfig', this.currentConfig);
+      });
+
+      socket.on('setConfig', (data: any) => {
+        this.currentConfig = data;
+        socket.broadcast.emit('sendConfig', this.currentConfig);
+      });
+
+      socket.on('getPalestrante', () => {
+        socket.emit('sendPalestrante', this.palestranteInfos);
+      });
+
+      socket.on('setPalestrante', (data: any) => {
+        this.palestranteInfos = data;
+        socket.emit('sendPalestrante', this.palestranteInfos);
+        socket.broadcast.emit('sendPalestrante', this.palestranteInfos);
+      });
+
+    });
+  }
 }
 
 export default SocketIo;

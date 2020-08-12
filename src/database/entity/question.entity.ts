@@ -13,6 +13,12 @@ export class Question extends BaseEntity {
   user: User
 
   @Column()
+  tema: string
+
+  @Column()
+  dateTime: string
+
+  @Column()
   text: string
 
   @Column({ nullable: true })

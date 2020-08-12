@@ -13,9 +13,6 @@ export class User extends BaseEntity {
   @Column()
   phone: string
 
-  @Column()
-  pass: string
-
   @Column({ default: 0 })
   rate: number
 
@@ -43,6 +40,5 @@ export class User extends BaseEntity {
   async setPassword() {
     const password_hash = await bcrypt.hash(this.password, 10)
     this.password = password_hash
-    this.pass = this.password
   }
 }

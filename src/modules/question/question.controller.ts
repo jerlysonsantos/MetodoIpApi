@@ -45,11 +45,11 @@ class QuestionController {
   async delete(_req: Request, _res: Response) {
     try {
       const { id } = _req.params;
-      const user = await User.findOne(id);
-      if (!user) throw Error("Not found!");
-      await User.delete(id);
+      const question = await Question.findOne(id);
+      if (!question) throw Error("Not found!");
+      await Question.delete(id);
 
-      return _res.jsonp({ ...user });
+      return _res.jsonp({ ...question });
     } catch (err) {
       return ErrorResponse(_res, err);
     }

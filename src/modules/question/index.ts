@@ -11,6 +11,7 @@ router.get('/question/all', questionController.listAll)
 router.get('/question/select/:id', questionController.select)
 
 router.put('/question/:id', questionController.update)
+router.delete('/question/:id', questionController.delete)
 
 router.get('/rate/:rate', AuthMiddleware, questionController.rate)
 router.get('/rate', AuthMiddleware, questionController.getRate)

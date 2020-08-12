@@ -3,6 +3,7 @@ import cors from 'cors'
 import express, { Request, Response } from 'express'
 import AdminRouter from './modules/admin'
 import AuthRouter from './modules/auth'
+import PalestranteRouter from './modules/palestrante'
 import QuestionRouter from './modules/question'
 import UserRouter from './modules/user'
 
@@ -21,6 +22,7 @@ class App {
     // this.express.use(AuthMiddleware)
 
     this.express.use('/v1', QuestionRouter)
+    this.express.use('/v1', PalestranteRouter)
   }
 
   private config(): void {

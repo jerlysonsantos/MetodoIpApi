@@ -33,6 +33,9 @@ export class Admins extends BaseEntity {
   @Column({ default: false })
   can_reply: boolean;
 
+  @Column({ default: false })
+  can_chatMod: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 
