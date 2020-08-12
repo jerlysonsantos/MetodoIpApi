@@ -8,7 +8,7 @@ class AdminController {
   async index(_req: Request, _res: Response) {
     try {
       const admins = await Admins.find({
-        select: ["id", "name", "email", "can_answer", "can_reply", "can_users"],
+        select: ["id", "name", "email", "can_answer", "can_reply", "can_users", "can_chatMod"],
         order: {
           created_at: "ASC",
         },
