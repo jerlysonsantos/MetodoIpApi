@@ -25,7 +25,6 @@ class SocketIo {
     this.question();
     this.appConfig();
   }
-  
 
 // =================== FUNÇÕES ======================//
   private deleteMessage(data: any) {
@@ -51,7 +50,6 @@ class SocketIo {
 
 	private chat(): void {
 		this.io.of('/chat').on('connection', (socket: any) => {
-
       socket.on('getMessages', () => {
   			socket.emit('getAllMessages', this.messages);
       });
@@ -61,10 +59,11 @@ class SocketIo {
 				let message = {
           messageId: generator.generate({ length: 10, numbers: true }),
           deleted: false,
+          date: new Date(),
 					...data
 				};
 
-				socket.emit('myMessage', { ...message, author: 'Eu'});
+				socket.emit('myMessage', { ...message, title: 'Eu', position: 'right'});
 				socket.broadcast.emit('reciveMessage', message);
         await new Promise((resolve) => { this.messages.push(message); resolve() });
       });
@@ -73,7 +72,12 @@ class SocketIo {
         socket.emit('deletedMessage', data);
         socket.broadcast.emit('deletedMessage', data);
         await this.deleteMessage(data);
-      })
+      });
+
+      socket.on('launchResearch', async (data: any) => {
+        socket.emit('getResearch', data);
+        socket.broadcast.emit('getResearch', data);
+      });
 		});
 	}
 
@@ -123,6 +127,7 @@ class SocketIo {
   
   private appConfig(): void {
     this.io.of('/config').on('connection', (socket: any) => {
+
       socket.on('getConfig', () => {
         socket.emit('sendConfig', this.currentConfig);
       });
