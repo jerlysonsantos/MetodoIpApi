@@ -7,7 +7,11 @@ import app from './server'
 import io from 'socket.io';
 
 const serverStart = server.createServer(app)
-const ioInstance = io.listen(serverStart)
+const ioInstance = io.listen(serverStart,  {
+  pingInterval: 10000,
+  pingTimeout: 10000,
+  cookie: false
+})
 
 import SocketIo from './modules/socketIo'
 

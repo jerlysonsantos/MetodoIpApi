@@ -18,6 +18,9 @@ class SocketIo {
     instagram: '@teste',
   };
 
+  private research: any = {};
+  private quantVotes: number = 0;
+
 	constructor (ioInstance: any) {
 		this.io = ioInstance;
 
@@ -74,9 +77,33 @@ class SocketIo {
         await this.deleteMessage(data);
       });
 
+      socket.on('getCurrentResearch', async () => {
+        if (this.research !== {})
+          socket.emit('getResearch', this.research);
+      });
+
       socket.on('launchResearch', async (data: any) => {
+        //this.research = {};
+        this.research = data;
+        this.quantVotes = 0;
         socket.emit('getResearch', data);
         socket.broadcast.emit('getResearch', data);
+      });
+
+      socket.on('voteResearch', async (data:any) => {
+        this.quantVotes ++;
+        let camps: any[] = [];
+        this.research.campos.map((item: any) => {
+          if (item.campo === data.campo) {
+            item['quantVotes'] = item.quantVotes + 1; 
+          }
+          item['percent'] = (item.quantVotes * 100) / this.quantVotes;
+    
+          camps.push(item)
+        });
+
+        socket.emit('onVoted', camps);
+        socket.broadcast.emit('onVoted', camps);
       });
 		});
 	}

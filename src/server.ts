@@ -6,6 +6,7 @@ import AuthRouter from './modules/auth'
 import PalestranteRouter from './modules/palestrante'
 import QuestionRouter from './modules/question'
 import UserRouter from './modules/user'
+import UrlController from './modules/url'
 
 class App {
   public express: express.Application
@@ -23,6 +24,7 @@ class App {
 
     this.express.use('/v1', QuestionRouter)
     this.express.use('/v1', PalestranteRouter)
+    this.express.use('/v1', UrlController)
   }
 
   private config(): void {
