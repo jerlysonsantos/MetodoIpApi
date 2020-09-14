@@ -24,4 +24,4 @@ startConnection().then(() => {
   new SocketIo(ioInstance)
 
   serverStart.listen(PORT, () => console.log(`App listening on port ${PORT}!`))
-})
+}).catch((error) => console.log(error))

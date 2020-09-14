@@ -12,7 +12,7 @@ const startConnection = async () => {
     synchronize: true,
     logging: false,
     entities: [path.join(__dirname, '/entity/*.entity{.ts,.js}')],
-  })
+  }).catch((error) => console.log(error))
 }
 
 export default startConnection
