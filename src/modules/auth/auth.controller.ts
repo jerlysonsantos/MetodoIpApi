@@ -23,7 +23,7 @@ class AuthController {
 
       if (!process.env.JWT_SECRET) return _res.status(500).json({ error: 'Ops! Ocorreu um erro, tente novamente mais tarde.' })
 
-      const token = await jwt.sign({ ...user }, process.env.JWT_SECRET, { expiresIn: '24h' })
+      const token = await jwt.sign({ ...user }, process.env.JWT_SECRET)
 
       const id = user.id.toString();
 
@@ -31,6 +31,18 @@ class AuthController {
       await User.update(id , { token });
 
       return _res.json({ token, user })
+    } catch (err) {
+      return ErrorResponse(_res, err)
+    }
+  }
+
+  async getAllUsers(_req: Request, _res: Response) {
+    try {
+      const users = await User.find()
+
+      if (!users) return _res.status(401).json({ error: 'Usuário não encontrado!' })
+
+      return _res.json({ users})
     } catch (err) {
       return ErrorResponse(_res, err)
     }
@@ -50,6 +62,19 @@ class AuthController {
       return _res.json({ message: true })
     } catch (err) {
       return ErrorResponse(_res, err)
+    }
+  }
+
+  async delete(_req: Request, _res: Response) {
+    try {
+      const { id } = _req.params;
+      const user = await User.findOne(id);
+      if (!user) throw Error("Not found!");
+      await User.delete(id);
+
+      return _res.jsonp({ ...user });
+    } catch (err) {
+      return ErrorResponse(_res, err);
     }
   }
 }
