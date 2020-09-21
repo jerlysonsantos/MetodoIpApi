@@ -98,11 +98,11 @@ class AdminController {
       if (!isAuth) return _res.status(401).json({ error: "Senha incorreta!" });
       delete user.password;
 
-      if (!process.env.JWT_SECRET)
+      if (!process.env.JWT_SECRET) 
         return _res
           .status(500)
           .json({ error: "Ops! Ocorreu um erro, tente novamente mais tarde." });
-
+      
       const token = await jwt.sign({ ...user }, process.env.JWT_SECRET);
 
       return _res.json({ token, user });
